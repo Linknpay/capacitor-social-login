@@ -1,6 +1,6 @@
 {
   "name": "capacitor-social-login",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "All social logins in one plugin",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -32,6 +32,7 @@
     "login"
   ],
   "scripts": {
+    "prepare": "npm run build",
     "verify": "npm run verify:ios && npm run verify:android && npm run verify:web",
     "verify:ios": "xcodebuild -scheme CapacitorSocialLogin -destination generic/platform=iOS",
     "verify:android": "cd android && ./gradlew clean build test && cd ..",

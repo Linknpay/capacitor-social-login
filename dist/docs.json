@@ -1,0 +1,648 @@
+{
+  "api": {
+    "name": "SocialLoginPlugin",
+    "slug": "socialloginplugin",
+    "docs": "",
+    "tags": [],
+    "methods": [
+      {
+        "name": "initialize",
+        "signature": "(options: InitializeOptions) => Promise<void>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "InitializeOptions"
+          }
+        ],
+        "returns": "Promise<void>",
+        "tags": [
+          {
+            "name": "description",
+            "text": "initialize the plugin with the required options"
+          }
+        ],
+        "docs": "Initialize the plugin",
+        "complexTypes": [
+          "InitializeOptions"
+        ],
+        "slug": "initialize"
+      },
+      {
+        "name": "login",
+        "signature": "(options: LoginOptions) => Promise<LoginResult>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "LoginOptions"
+          }
+        ],
+        "returns": "Promise<LoginResult>",
+        "tags": [
+          {
+            "name": "description",
+            "text": "login with the selected provider"
+          }
+        ],
+        "docs": "Login with the selected provider",
+        "complexTypes": [
+          "LoginResult",
+          "LoginOptions"
+        ],
+        "slug": "login"
+      },
+      {
+        "name": "logout",
+        "signature": "(options: { provider: \"apple\" | \"google\" | \"facebook\"; }) => Promise<void>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "{ provider: 'facebook' | 'google' | 'apple'; }"
+          }
+        ],
+        "returns": "Promise<void>",
+        "tags": [
+          {
+            "name": "description",
+            "text": "logout the user"
+          }
+        ],
+        "docs": "Logout",
+        "complexTypes": [],
+        "slug": "logout"
+      },
+      {
+        "name": "isLoggedIn",
+        "signature": "(options: isLoggedInOptions) => Promise<{ isLoggedIn: boolean; }>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "isLoggedInOptions"
+          }
+        ],
+        "returns": "Promise<{ isLoggedIn: boolean; }>",
+        "tags": [
+          {
+            "name": "description",
+            "text": "logout the user"
+          }
+        ],
+        "docs": "IsLoggedIn",
+        "complexTypes": [
+          "isLoggedInOptions"
+        ],
+        "slug": "isloggedin"
+      },
+      {
+        "name": "getAuthorizationCode",
+        "signature": "(options: AuthorizationCodeOptions) => Promise<AuthorizationCode>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "AuthorizationCodeOptions"
+          }
+        ],
+        "returns": "Promise<AuthorizationCode>",
+        "tags": [
+          {
+            "name": "description",
+            "text": "get the current access token"
+          }
+        ],
+        "docs": "Get the current access token",
+        "complexTypes": [
+          "AuthorizationCode",
+          "AuthorizationCodeOptions"
+        ],
+        "slug": "getauthorizationcode"
+      },
+      {
+        "name": "refresh",
+        "signature": "(options: LoginOptions) => Promise<void>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "LoginOptions"
+          }
+        ],
+        "returns": "Promise<void>",
+        "tags": [
+          {
+            "name": "description",
+            "text": "refresh the access token"
+          }
+        ],
+        "docs": "Refresh the access token",
+        "complexTypes": [
+          "LoginOptions"
+        ],
+        "slug": "refresh"
+      }
+    ],
+    "properties": []
+  },
+  "interfaces": [
+    {
+      "name": "InitializeOptions",
+      "slug": "initializeoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "facebook",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "{ appId: string; } | undefined"
+        },
+        {
+          "name": "google",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "{ iOSClientId?: string | undefined; iOSServerClientId?: string | undefined; webClientId?: string | undefined; } | undefined"
+        },
+        {
+          "name": "apple",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "{ clientId?: string | undefined; redirectUrl?: string | undefined; } | undefined"
+        }
+      ]
+    },
+    {
+      "name": "LoginResult",
+      "slug": "loginresult",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "provider",
+          "tags": [
+            {
+              "text": "select provider to login with",
+              "name": "description"
+            }
+          ],
+          "docs": "Provider",
+          "complexTypes": [],
+          "type": "'facebook' | 'google' | 'apple' | 'twitter'"
+        },
+        {
+          "name": "result",
+          "tags": [
+            {
+              "text": "payload to login with",
+              "name": "description"
+            }
+          ],
+          "docs": "Payload",
+          "complexTypes": [
+            "FacebookLoginResponse",
+            "GoogleLoginResponse",
+            "AppleProviderResponse"
+          ],
+          "type": "FacebookLoginResponse | GoogleLoginResponse | AppleProviderResponse"
+        }
+      ]
+    },
+    {
+      "name": "FacebookLoginResponse",
+      "slug": "facebookloginresponse",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "accessToken",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [
+            "AccessToken"
+          ],
+          "type": "AccessToken | null"
+        },
+        {
+          "name": "profile",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "{ userID: string; email: string | null; friendIDs: string[]; birthday: string | null; ageRange: { min?: number | undefined; max?: number | undefined; } | null; gender: string | null; location: { id: string; name: string; } | null; hometown: { id: string; name: string; } | null; profileURL: string | null; name: string | null; imageURL: string | null; }"
+        },
+        {
+          "name": "authenticationToken",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | null"
+        }
+      ]
+    },
+    {
+      "name": "AccessToken",
+      "slug": "accesstoken",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "applicationId",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "declinedPermissions",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string[] | undefined"
+        },
+        {
+          "name": "expires",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "isExpired",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "boolean | undefined"
+        },
+        {
+          "name": "lastRefresh",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "permissions",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string[] | undefined"
+        },
+        {
+          "name": "token",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "userId",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        }
+      ]
+    },
+    {
+      "name": "GoogleLoginResponse",
+      "slug": "googleloginresponse",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "accessToken",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [
+            "AccessToken"
+          ],
+          "type": "AccessToken | null"
+        },
+        {
+          "name": "idToken",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | null"
+        },
+        {
+          "name": "profile",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "{ email: string | null; familyName: string | null; givenName: string | null; id: string | null; name: string | null; imageUrl: string | null; }"
+        }
+      ]
+    },
+    {
+      "name": "AppleProviderResponse",
+      "slug": "appleproviderresponse",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "user",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | null"
+        },
+        {
+          "name": "email",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | null"
+        },
+        {
+          "name": "givenName",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | null"
+        },
+        {
+          "name": "familyName",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | null"
+        },
+        {
+          "name": "identityToken",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | null"
+        },
+        {
+          "name": "authorizationCode",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | null"
+        }
+      ]
+    },
+    {
+      "name": "LoginOptions",
+      "slug": "loginoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "provider",
+          "tags": [
+            {
+              "text": "select provider to login with",
+              "name": "description"
+            }
+          ],
+          "docs": "Provider",
+          "complexTypes": [],
+          "type": "'facebook' | 'google' | 'apple' | 'twitter'"
+        },
+        {
+          "name": "options",
+          "tags": [
+            {
+              "text": "payload to login with",
+              "name": "description"
+            }
+          ],
+          "docs": "Options",
+          "complexTypes": [
+            "FacebookLoginOptions",
+            "GoogleLoginOptions",
+            "AppleProviderOptions"
+          ],
+          "type": "FacebookLoginOptions | GoogleLoginOptions | AppleProviderOptions"
+        }
+      ]
+    },
+    {
+      "name": "FacebookLoginOptions",
+      "slug": "facebookloginoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "permissions",
+          "tags": [
+            {
+              "text": "select permissions to login with",
+              "name": "description"
+            }
+          ],
+          "docs": "Permissions",
+          "complexTypes": [],
+          "type": "string[]"
+        },
+        {
+          "name": "limitedLogin",
+          "tags": [
+            {
+              "text": "use limited login for Facebook IOS",
+              "name": "description"
+            },
+            {
+              "text": "false",
+              "name": "default"
+            }
+          ],
+          "docs": "Is Limited Login",
+          "complexTypes": [],
+          "type": "boolean | undefined"
+        },
+        {
+          "name": "nonce",
+          "tags": [
+            {
+              "text": "A custom nonce to use for the login request",
+              "name": "description"
+            }
+          ],
+          "docs": "Nonce",
+          "complexTypes": [],
+          "type": "string | undefined"
+        }
+      ]
+    },
+    {
+      "name": "GoogleLoginOptions",
+      "slug": "googleloginoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "scopes",
+          "tags": [
+            {
+              "text": "[\"profile\", \"email\"]",
+              "name": "example"
+            },
+            {
+              "text": " [Google OAuth2 Scopes](https://developers.google.com/identity/protocols/oauth2/scopes)",
+              "name": "see"
+            }
+          ],
+          "docs": "Specifies the scopes required for accessing Google APIs\nThe default is defined in the configuration.",
+          "complexTypes": [],
+          "type": "string[] | undefined"
+        },
+        {
+          "name": "nonce",
+          "tags": [
+            {
+              "text": "nonce",
+              "name": "description"
+            }
+          ],
+          "docs": "Nonce",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "grantOfflineAccess",
+          "tags": [
+            {
+              "text": "false",
+              "name": "default"
+            },
+            {
+              "text": "3.1.0",
+              "name": "since"
+            }
+          ],
+          "docs": "Set if your application needs to refresh access tokens when the user is not present at the browser.\nIn response use `serverAuthCode` key",
+          "complexTypes": [],
+          "type": "boolean | undefined"
+        }
+      ]
+    },
+    {
+      "name": "AppleProviderOptions",
+      "slug": "appleprovideroptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "scopes",
+          "tags": [
+            {
+              "text": "select scopes to login with",
+              "name": "description"
+            }
+          ],
+          "docs": "Scopes",
+          "complexTypes": [],
+          "type": "string[] | undefined"
+        },
+        {
+          "name": "nonce",
+          "tags": [
+            {
+              "text": "nonce",
+              "name": "description"
+            }
+          ],
+          "docs": "Nonce",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "state",
+          "tags": [
+            {
+              "text": "state",
+              "name": "description"
+            }
+          ],
+          "docs": "State",
+          "complexTypes": [],
+          "type": "string | undefined"
+        }
+      ]
+    },
+    {
+      "name": "isLoggedInOptions",
+      "slug": "isloggedinoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "provider",
+          "tags": [
+            {
+              "text": "Provider for the isLoggedIn",
+              "name": "description"
+            }
+          ],
+          "docs": "Provider",
+          "complexTypes": [],
+          "type": "'facebook' | 'google' | 'apple'"
+        }
+      ]
+    },
+    {
+      "name": "AuthorizationCode",
+      "slug": "authorizationcode",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "jwt",
+          "tags": [
+            {
+              "text": "A JSON web token",
+              "name": "description"
+            }
+          ],
+          "docs": "Jwt",
+          "complexTypes": [],
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "AuthorizationCodeOptions",
+      "slug": "authorizationcodeoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "provider",
+          "tags": [
+            {
+              "text": "Provider for the authorization code",
+              "name": "description"
+            }
+          ],
+          "docs": "Provider",
+          "complexTypes": [],
+          "type": "'facebook' | 'google' | 'apple'"
+        }
+      ]
+    }
+  ],
+  "enums": [],
+  "typeAliases": [],
+  "pluginConfigs": []
+}
