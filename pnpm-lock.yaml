@@ -83,7 +83,7 @@ importers:
       '@capacitor/splash-screen':
         specifier: latest
         version: 6.0.2(@capacitor/core@6.1.2)
-      '@capgo/capacitor-social-login':
+      'capacitor-social-login':
         specifier: file:..
         version: examples@file:examples
     devDependencies:
@@ -117,7 +117,7 @@ importers:
       '@capacitor/status-bar':
         specifier: ^6.0.0
         version: 6.0.1(@capacitor/core@6.1.2)
-      '@capgo/capacitor-social-login':
+      'capacitor-social-login':
         specifier: workspace:*
         version: link:../..
       '@ionic/vue':
