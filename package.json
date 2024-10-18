@@ -1,6 +1,6 @@
 {
   "name": "capacitor-social-login",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "All social logins in one plugin",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -19,7 +19,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Cap-go/capacitor-social-login.git"
+    "url": "git+https://github.com/Linknpay/capacitor-social-login.git"
   },
   "bugs": {
     "url": "https://github.com/Cap-go/capacitor-social-login/issues"
