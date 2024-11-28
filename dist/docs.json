@@ -159,7 +159,7 @@
           "tags": [],
           "docs": "",
           "complexTypes": [],
-          "type": "{ appId: string; } | undefined"
+          "type": "{ appId: string; clientToken: string; } | undefined"
         },
         {
           "name": "google",
@@ -231,18 +231,18 @@
           "type": "AccessToken | null"
         },
         {
+          "name": "idToken",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | null"
+        },
+        {
           "name": "profile",
           "tags": [],
           "docs": "",
           "complexTypes": [],
           "type": "{ userID: string; email: string | null; friendIDs: string[]; birthday: string | null; ageRange: { min?: number | undefined; max?: number | undefined; } | null; gender: string | null; location: { id: string; name: string; } | null; hometown: { id: string; name: string; } | null; profileURL: string | null; name: string | null; imageURL: string | null; }"
-        },
-        {
-          "name": "authenticationToken",
-          "tags": [],
-          "docs": "",
-          "complexTypes": [],
-          "type": "string | null"
         }
       ]
     },
@@ -303,6 +303,13 @@
           "type": "string"
         },
         {
+          "name": "refreshToken",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
           "name": "userId",
           "tags": [],
           "docs": "",
@@ -351,46 +358,27 @@
       "methods": [],
       "properties": [
         {
-          "name": "user",
+          "name": "accessToken",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [
+            "AccessToken"
+          ],
+          "type": "AccessToken | null"
+        },
+        {
+          "name": "idToken",
           "tags": [],
           "docs": "",
           "complexTypes": [],
           "type": "string | null"
         },
         {
-          "name": "email",
+          "name": "profile",
           "tags": [],
           "docs": "",
           "complexTypes": [],
-          "type": "string | null"
-        },
-        {
-          "name": "givenName",
-          "tags": [],
-          "docs": "",
-          "complexTypes": [],
-          "type": "string | null"
-        },
-        {
-          "name": "familyName",
-          "tags": [],
-          "docs": "",
-          "complexTypes": [],
-          "type": "string | null"
-        },
-        {
-          "name": "identityToken",
-          "tags": [],
-          "docs": "",
-          "complexTypes": [],
-          "type": "string | null"
-        },
-        {
-          "name": "authorizationCode",
-          "tags": [],
-          "docs": "",
-          "complexTypes": [],
-          "type": "string | null"
+          "type": "{ user: string; email: string | null; givenName: string | null; familyName: string | null; }"
         }
       ]
     },
@@ -523,7 +511,7 @@
               "name": "default"
             },
             {
-              "text": "3.1.0",
+              "text": "0.0.69",
               "name": "since"
             }
           ],
@@ -544,8 +532,12 @@
           "name": "scopes",
           "tags": [
             {
-              "text": "select scopes to login with",
+              "text": "An array of scopes to request during login",
               "name": "description"
+            },
+            {
+              "text": "[\"name\", \"email\"]\ndefault: [\"name\", \"email\"]",
+              "name": "example"
             }
           ],
           "docs": "Scopes",
