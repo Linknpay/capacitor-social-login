@@ -50,30 +50,11 @@ public class FacebookProvider implements SocialProvider {
 
       this.callbackManager = CallbackManager.Factory.create();
 
-      LoginManager.getInstance()
-        .registerCallback(
-          callbackManager,
-          new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-              Log.d(LOG_TAG, "LoginManager.onSuccess");
-            }
-
-            @Override
-            public void onCancel() {
-              Log.d(LOG_TAG, "LoginManager.onCancel");
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-              Log.e(LOG_TAG, "LoginManager.onError", exception);
-            }
-          }
-        );
+      // No need to register a callback here since we do it in the login method
     } catch (JSONException e) {
       Log.e(LOG_TAG, "Error initializing Facebook SDK", e);
       throw new RuntimeException(
-        "Failed to initialize Facebook SDK: " + e.getMessage()
+              "Failed to initialize Facebook SDK: " + e.getMessage()
       );
     }
   }
@@ -82,68 +63,66 @@ public class FacebookProvider implements SocialProvider {
   public void login(PluginCall call, JSONObject config) {
     try {
       Collection<String> permissions = JsonHelper.jsonArrayToList(
-        config.getJSONArray("permissions")
+              config.getJSONArray("permissions")
       );
       boolean limitedLogin = config.optBoolean("limitedLogin", false);
       String nonce = config.optString("nonce", "");
 
-      LoginManager.getInstance()
-        .registerCallback(
-          callbackManager,
-          new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-              Log.d(LOG_TAG, "LoginManager.onSuccess");
-              AccessToken accessToken = loginResult.getAccessToken();
-              JSObject result = new JSObject();
-              result.put("accessToken", createAccessTokenObject(accessToken));
-              result.put("profile", createProfileObject(accessToken));
-              result.put(
-                "idToken",
-                loginResult.getAuthenticationToken() != null
-                  ? loginResult.getAuthenticationToken().getToken()
-                  : null
-              );
-
-              JSObject response = new JSObject();
-              response.put("provider", "facebook");
-              response.put("result", result);
-
-              call.resolve(response);
-            }
-
-            @Override
-            public void onCancel() {
-              Log.d(LOG_TAG, "LoginManager.onCancel");
-              call.reject("Login cancelled");
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-              Log.e(LOG_TAG, "LoginManager.onError", exception);
-              call.reject(exception.getMessage());
-            }
-          }
-        );
-
       LoginManager loginManager = LoginManager.getInstance();
+
       if (limitedLogin) {
         Log.w(LOG_TAG, "Limited login is not available for Android");
       }
 
       loginManager.setLoginBehavior(LoginBehavior.NATIVE_WITH_FALLBACK);
+
+      // Register callback
+      loginManager.registerCallback(
+              callbackManager,
+              new FacebookCallback<LoginResult>() {
+                @Override
+                public void onSuccess(LoginResult loginResult) {
+                  Log.d(LOG_TAG, "LoginManager.onSuccess");
+                  AccessToken accessToken = loginResult.getAccessToken();
+                  JSObject result = new JSObject();
+                  result.put("accessToken", createAccessTokenObject(accessToken));
+                  result.put(
+                          "idToken",
+                          loginResult.getAuthenticationToken() != null
+                                  ? loginResult.getAuthenticationToken().getToken()
+                                  : null
+                  );
+
+                  // Fetch profile asynchronously
+                  fetchProfileAsync(accessToken, result, call);
+                }
+
+                @Override
+                public void onCancel() {
+                  Log.d(LOG_TAG, "LoginManager.onCancel");
+                  call.reject("Login cancelled");
+                }
+
+                @Override
+                public void onError(FacebookException exception) {
+                  Log.e(LOG_TAG, "LoginManager.onError", exception);
+                  call.reject(exception.getMessage());
+                }
+              }
+      );
+
       if (!nonce.isEmpty()) {
         loginManager.logIn(
-          (ActivityResultRegistryOwner) activity,
-          callbackManager,
-          permissions,
-          nonce
+                (ActivityResultRegistryOwner) activity,
+                callbackManager,
+                permissions,
+                nonce
         );
       } else {
         loginManager.logIn(
-          (ActivityResultRegistryOwner) activity,
-          callbackManager,
-          permissions
+                (ActivityResultRegistryOwner) activity,
+                callbackManager,
+                permissions
         );
       }
     } catch (JSONException e) {
@@ -171,8 +150,8 @@ public class FacebookProvider implements SocialProvider {
   public void isLoggedIn(PluginCall call) {
     AccessToken accessToken = AccessToken.getCurrentAccessToken();
     call.resolve(
-      new JSObject()
-        .put("isLoggedIn", accessToken != null && !accessToken.isExpired())
+            new JSObject()
+                    .put("isLoggedIn", accessToken != null && !accessToken.isExpired())
     );
   }
 
@@ -183,9 +162,9 @@ public class FacebookProvider implements SocialProvider {
   }
 
   public boolean handleOnActivityResult(
-    int requestCode,
-    int resultCode,
-    Intent data
+          int requestCode,
+          int resultCode,
+          Intent data
   ) {
     Log.d(LOG_TAG, "FacebookProvider.handleOnActivityResult called");
     if (callbackManager != null) {
@@ -198,8 +177,8 @@ public class FacebookProvider implements SocialProvider {
     JSObject tokenObject = new JSObject();
     tokenObject.put("applicationId", accessToken.getApplicationId());
     tokenObject.put(
-      "declinedPermissions",
-      new JSArray(accessToken.getDeclinedPermissions())
+            "declinedPermissions",
+            new JSArray(accessToken.getDeclinedPermissions())
     );
     tokenObject.put("expires", accessToken.getExpires().getTime());
     tokenObject.put("isExpired", accessToken.isExpired());
@@ -210,40 +189,51 @@ public class FacebookProvider implements SocialProvider {
     return tokenObject;
   }
 
-  private JSObject createProfileObject(AccessToken accessToken) {
-    JSObject profileObject = new JSObject();
+  private void fetchProfileAsync(AccessToken accessToken, JSObject result, PluginCall call) {
     GraphRequest request = GraphRequest.newMeRequest(
-      accessToken,
-      new GraphRequest.GraphJSONObjectCallback() {
-        @Override
-        public void onCompleted(JSONObject object, GraphResponse response) {
-          if (response.getError() != null) {
-            Log.e(
-              LOG_TAG,
-              "Error fetching profile",
-              response.getError().getException()
-            );
-          } else {
-            profileObject.put("userID", object.optString("id", ""));
-            profileObject.put("email", object.optString("email", ""));
-            profileObject.put("name", object.optString("name", ""));
+            accessToken,
+            new GraphRequest.GraphJSONObjectCallback() {
+              @Override
+              public void onCompleted(JSONObject object, GraphResponse response) {
+                if (response.getError() != null) {
+                  Log.e(
+                          LOG_TAG,
+                          "Error fetching profile",
+                          response.getError().getException()
+                  );
+                  call.reject("Error fetching profile: " + response.getError().getErrorMessage());
+                } else {
+                  JSObject profileObject = new JSObject();
+                  profileObject.put("userID", object.optString("id", ""));
+                  profileObject.put("email", object.optString("email", ""));
+                  profileObject.put("name", object.optString("name", ""));
 
-            JSONObject pictureObject = object.optJSONObject("picture");
-            if (pictureObject != null) {
-              JSONObject dataObject = pictureObject.optJSONObject("data");
-              if (dataObject != null) {
-                profileObject.put("imageURL", dataObject.optString("url", ""));
+                  JSONObject pictureObject = object.optJSONObject("picture");
+                  if (pictureObject != null) {
+                    JSONObject dataObject = pictureObject.optJSONObject("data");
+                    if (dataObject != null) {
+                      profileObject.put("imageURL", dataObject.optString("url", ""));
+                    }
+                  }
+                  // Add other fields as needed
+
+                  // Add the profileObject to result
+                  result.put("profile", profileObject);
+
+                  // Prepare the response
+                  JSObject responseObject = new JSObject();
+                  responseObject.put("provider", "facebook");
+                  responseObject.put("result", result);
+
+                  // Resolve the call
+                  call.resolve(responseObject);
+                }
               }
             }
-            // Add other fields as needed
-          }
-        }
-      }
     );
     Bundle parameters = new Bundle();
     parameters.putString("fields", "id,name,email,picture.type(large)");
     request.setParameters(parameters);
-    request.executeAndWait();
-    return profileObject;
+    request.executeAsync(); // Execute asynchronously to avoid NetworkOnMainThreadException
   }
 }
