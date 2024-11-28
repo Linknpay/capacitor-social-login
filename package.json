@@ -1,6 +1,6 @@
 {
   "name": "capacitor-social-login",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "All social logins in one plugin",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",

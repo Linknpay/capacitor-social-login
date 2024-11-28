@@ -4,6 +4,10 @@ export interface InitializeOptions {
          * Facebook App ID, provided by Facebook for web, in mobile it's set in the native files
          */
         appId: string;
+        /**
+         * Facebook Client Token, provided by Facebook for web, in mobile it's set in the native files
+         */
+        clientToken: string;
     };
     google?: {
         /**
@@ -30,7 +34,7 @@ export interface InitializeOptions {
     };
     apple?: {
         /**
-         * Apple Client ID, provided by Apple
+         * Apple Client ID, provided by Apple for web and Android
          */
         clientId?: string;
         /**
@@ -75,7 +79,7 @@ export interface GoogleLoginOptions {
      * In response use `serverAuthCode` key
      *
      * @default false
-     * @since 3.1.0
+     * @since 0.0.69
      * */
     grantOfflineAccess?: boolean;
 }
@@ -94,7 +98,9 @@ export interface GoogleLoginResponse {
 export interface AppleProviderOptions {
     /**
      * Scopes
-     * @description select scopes to login with
+     * @description An array of scopes to request during login
+     * @example ["name", "email"]
+     * default: ["name", "email"]
      */
     scopes?: string[];
     /**
@@ -109,12 +115,14 @@ export interface AppleProviderOptions {
     state?: string;
 }
 export interface AppleProviderResponse {
-    user: string | null;
-    email: string | null;
-    givenName: string | null;
-    familyName: string | null;
-    identityToken: string | null;
-    authorizationCode: string | null;
+    accessToken: AccessToken | null;
+    idToken: string | null;
+    profile: {
+        user: string;
+        email: string | null;
+        givenName: string | null;
+        familyName: string | null;
+    };
 }
 export interface LoginOptions {
     /**
@@ -148,10 +156,12 @@ export interface AccessToken {
     lastRefresh?: string;
     permissions?: string[];
     token: string;
+    refreshToken?: string;
     userId?: string;
 }
 export interface FacebookLoginResponse {
     accessToken: AccessToken | null;
+    idToken: string | null;
     profile: {
         userID: string;
         email: string | null;
@@ -174,7 +184,6 @@ export interface FacebookLoginResponse {
         name: string | null;
         imageURL: string | null;
     };
-    authenticationToken: string | null;
 }
 export interface AuthorizationCode {
     /**
